@@ -38,21 +38,31 @@ This repository features a Flask-based chatbot created for a conceptual coffee s
   Ensure you have MySQL installed on your system.
   Create a database for the chatbot.
 
-  Tables used:  
-    - products: table with sample data of products sold in coffee shop
-		    - productID: unique identifier for each product
-    		- productName: name of the product
-    		- productDescription: general description of the product
-    		- price: unit price of the product
-	  - orders: table with sample customer order information
-    		- orderID: unique identifier for each order
-    		- customerName: name of the customer who placed the order
-    		- orderStatus: status of the order ("New", "In Progress", "Complete")
-    - orderDetails: table that tracks the products and respective quantities for each order
-    		- orderDetailsID: unique identifier for the number of a particular product in the specified order
-    		- orderID: corresponding order number for the order's details (linked to "orders" table)
-    		- productID: ID of the product being ordered (linked to "products" table)
-    		- quantity: number of products in the order details
+  ## Tables Used
+
+### `products`
+- **Description:** Table with sample data of products sold in the coffee shop.
+- **Columns:**
+  - **productID:** Unique identifier for each product.
+  - **productName:** Name of the product.
+  - **productDescription:** General description of the product.
+  - **price:** Unit price of the product.
+
+### `orders`
+- **Description:** Table with sample customer order information.
+- **Columns:**
+  - **orderID:** Unique identifier for each order.
+  - **customerName:** Name of the customer who placed the order.
+  - **orderStatus:** Status of the order ("New", "In Progress", "Complete").
+
+### `orderDetails`
+- **Description:** Table that tracks the products and respective quantities for each order.
+- **Columns:**
+  - **orderDetailsID:** Unique identifier for the number of a particular product in the specified order.
+  - **orderID:** Corresponding order number for the order's details (linked to `orders` table).
+  - **productID:** ID of the product being ordered (linked to `products` table).
+  - **quantity:** Number of products in the order details.
+
 
 3. **Configure the Application:**
 
