@@ -35,33 +35,33 @@ This repository features a Flask-based chatbot created for a conceptual coffee s
 
 2. **Set Up the Database:**
 
-  Ensure you have MySQL installed on your system.
-  Create a database for the chatbot.
+    Ensure you have MySQL installed on your system.
+    Create a database for the chatbot.
 
-  ### Tables Used
-
-  #### `products`
-  - **Description:** Table with sample data of products sold in the coffee shop.
-  - **Columns:**
-    - **productID:** Unique identifier for each product.
-    - **productName:** Name of the product.
-    - **productDescription:** General description of the product.
-    - **price:** Unit price of the product.
+    #### Tables Used
   
-  #### `orders`
-  - **Description:** Table with sample customer order information.
-  - **Columns:**
-    - **orderID:** Unique identifier for each order.
-    - **customerName:** Name of the customer who placed the order.
-    - **orderStatus:** Status of the order ("New", "In Progress", "Complete").
-  
-  #### `orderDetails`
-  - **Description:** Table that tracks the products and respective quantities for each order.
-  - **Columns:**
-    - **orderDetailsID:** Unique identifier for the number of a particular product in the specified order.
-    - **orderID:** Corresponding order number for the order's details (linked to `orders` table).
-    - **productID:** ID of the product being ordered (linked to `products` table).
-    - **quantity:** Number of products in the order details.
+    ##### `products`
+    - **Description:** Table with sample data of products sold in the coffee shop.
+    - **Columns:**
+      - **productID:** Unique identifier for each product.
+      - **productName:** Name of the product.
+      - **productDescription:** General description of the product.
+      - **price:** Unit price of the product.
+    
+    ##### `orders`
+    - **Description:** Table with sample customer order information.
+    - **Columns:**
+      - **orderID:** Unique identifier for each order.
+      - **customerName:** Name of the customer who placed the order.
+      - **orderStatus:** Status of the order ("New", "In Progress", "Complete").
+    
+    ##### `orderDetails`
+    - **Description:** Table that tracks the products and respective quantities for each order.
+    - **Columns:**
+      - **orderDetailsID:** Unique identifier for the number of a particular product in the specified order.
+      - **orderID:** Corresponding order number for the order's details (linked to `orders` table).
+      - **productID:** ID of the product being ordered (linked to `products` table).
+      - **quantity:** Number of products in the order details.
 
 3. **Configure the Application:**
 
@@ -75,12 +75,12 @@ This repository features a Flask-based chatbot created for a conceptual coffee s
 
 5. **Expose Local Server (Optional):**
 
-  If you need to expose your local server using ngrok, run:
-
-  ```bash
-  ngrok http 5000
-
-  Ensure you have ngrok installed. Replace '5000' with your Flask port if different.
+    If you need to expose your local server using ngrok, run:
+  
+    ```bash
+    ngrok http 5000
+  
+    Ensure you have ngrok installed. Replace '5000' with your Flask port if different.
 
 6. **Interact with the Chatbot:**
 
