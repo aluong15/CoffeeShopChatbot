@@ -75,12 +75,10 @@ This repository features a Flask-based chatbot created for a conceptual coffee s
 
 5. **Expose Local Server (Optional):**
 
-    If you need to expose your local server using ngrok, run:
+    If you need to expose your local server using ngrok, ensure you have ngrok installed. Replace '5000' with your Flask port if different. Run:
   
     ```bash
     ngrok http 5000
-  
-    Ensure you have ngrok installed. Replace '5000' with your Flask port if different.
 
 6. **Interact with the Chatbot:**
 
