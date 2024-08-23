@@ -1,43 +1,6 @@
 from flask import app, jsonify, request
 from app.mysqlconnector import create_connection
         
-# order.place intent
-# def place_order(req):
-#     product_name = req.get('queryResult').get('parameters').get('product_name')
-
-#     # connect to db
-#     connection = create_connection()
-#     cursor = connection.cursor()
-
-#     # get product_id from product_name
-#     query = "SELECT product_id FROM products WHERE product_name = %s"
-#     cursor.execute(query, (product_name,))
-#     result = cursor.fetchone()
-
-#     if result:
-#         product_id = result[0]
-
-#         #  insert the new order into the orders table
-#         query = "INSERT INTO orders (product_id, order_status) VALUE (%s, 'New')"
-#         cursor.execute(query, (product_id,))
-#         connection.commit()
-
-#         #  get new created order ID
-#         order_id = cursor.lastrowid
-
-#         response_text = f"Your order for {product_name} has been placed successfully! Your order ID is {order_id}."
-#     else:
-#         # product name doesn't exist
-#         response_text = f"Sorry, the product '{product_name} is not available."
-    
-#     # close cursor and connection
-#     cursor.close()
-#     connection.close() 
-
-#     return jsonify({'fulfillmentText': response_text})   
-
-
-
 # order.start intent
 def start_ongoing_order(session_id, connection, cursor, req):
     # Retrieve customer name from context
@@ -51,7 +14,14 @@ def start_ongoing_order(session_id, connection, cursor, req):
     print(f"Started ongoing order for customer {customer_name} with session_id {session_id}.")
 
     try:
-        # Clear any previous orders associated with session
+        # Get order_id based on session_id
+        order_id = get_order_id(session_id,cursor)
+
+        # First, delete the details associated with the order
+        cursor.execute('DELETE FROM orderDetails WHERE order_id = %s;', (order_id,))
+        print(f"Deleted order details associated with session {session_id}.")
+
+        # Then clear any previous orders associated with session
         cursor.execute('DELETE FROM orders WHERE session_id = %s;', (session_id,))
         print(f"Deleted previous orders associated with session {session_id}.")
         
