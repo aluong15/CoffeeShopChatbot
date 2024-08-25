@@ -57,7 +57,7 @@ def create_app(test_config=None):
                 case 'order.remove - context: ongoing-order':
                     return remove_from_order(session_id, connection, cursor, req)
                 case 'order.place - context: ongoing-order':
-                    return place_order(session_id, connection, cursor, req)
+                    return place_order(session_id, connection, cursor)
                 case 'order.cancel - context: ongoing-order':
                     return cancel_ongoing_order(session_id, connection, cursor, req)
                 case 'order.status':

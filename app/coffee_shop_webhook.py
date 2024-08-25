@@ -38,7 +38,7 @@ def start_ongoing_order(session_id, connection, cursor, req):
         print(f"Error: {e}")
         return jsonify({'fulfillmentText': 'An error occurred while processing your order. Please try again.'})
 
-    return jsonify({'fulfillmentText': 'Great! Let\’s get started with your new order.\nWe are currently offering coffee, tea, and pastries. What would you like to add to your order?'})
+    return jsonify({'fulfillmentText': 'Great! Let’s get started with your new order.\nWe are currently offering coffee, tea, and pastries. What would you like to add to your order?'})
 
 # order.add intent
 def add_to_order(session_id, connection, cursor, req):
@@ -141,8 +141,29 @@ def remove_from_order(session_id, connection, cursor, req):
     return jsonify({'fulfillmentText': f"Removed {', '.join(f'{q} {p}(s)' for p, q in zip(products, quantities))} to your order. Anything else?"})
 
 # order.place intent
-def place_order(session_id, connection, cursor, req):
-    return req
+def place_order(session_id, connection, cursor):
+    # update the order to 'In Progress'
+    try:
+        # Get order_id based on session_id
+        order_id = get_order_id(session_id,cursor)
+
+        cursor.execute('UPDATE orders SET order_status = %s WHERE order_id = %s;', ('In Progress', order_id))
+    
+        # Commit new order
+        connection.commit()
+
+        # Double-check that the order has been updated to 'In Progress'
+        new_order_status = get_order_status(order_id, cursor)
+        print(f"Order is now {new_order_status}.")
+
+
+    except Exception as e:
+        # Rollback in case of error
+        connection.rollback()
+        print(f"Error: {e}")
+        return jsonify({'fulfillmentText': 'An error occurred while processing your order. Please try again.'})
+
+    return jsonify({'fulfillmentText': f"Great! Your order has been placed! Your order number is {order_id}."})
 
 # order.cancel intent
 def cancel_ongoing_order(session_id, connection, cursor, req):
@@ -153,26 +174,7 @@ def check_order_status(cursor, req):
     # extract the order number from the request
     order_number = req.get('queryResult').get('parameters').get('order_number')
 
-    # connect to db
-    # connection = create_connection()
-    # cursor = connection.cursor()
-
-    # query order status
-    query = "SELECT order_status FROM orders WHERE order_id = %s"
-    cursor.execute(query, (order_number,))
-    result = cursor.fetchone()
-
-    if result:
-        order_status = result[0]
-        response_text = f"Your order with ID {order_number} is current {order_status}."
-    else:
-        response_text = f"Sorry, I couldn't find an order with ID {order_number}."
-    
-    # close cursor and connection
-    # cursor.close()
-    # connection.close()
-
-    return jsonify({'fulfillmentText': response_text})
+    return get_order_status(order_number, cursor)
 
 # get order_id from session_id
 def get_order_id (session_id, cursor):
@@ -183,3 +185,17 @@ def get_order_id (session_id, cursor):
         # Return the first element of the tuple, which is the actual order_id
         return order_id_tuple[0]
     return None # no order_id is found
+
+# get order_status from order_id
+def get_order_status (order_id, cursor):
+    # query order status
+    cursor.execute('SELECT order_status FROM orders WHERE order_id = %s', (order_id,))
+    result = cursor.fetchone()
+
+    if result:
+        order_status = result[0]
+        response_text = f"Your order with ID {order_id} is currently {order_status}."
+    else:
+        response_text = f"Sorry, I couldn't find an order with ID {order_id}."
+
+    return jsonify({'fulfillmentText': response_text})
