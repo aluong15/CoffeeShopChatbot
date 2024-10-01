@@ -95,19 +95,27 @@ def add_to_order(session_id, connection, cursor, req):
 
 # order.remove intent
 def remove_from_order(session_id, connection, cursor, req):
-    products = req.get('queryResult').get('parameters').get('product')
-    quantities = req.get('queryResult').get('parameters').get('product')
+    products = req.get('queryResult').get('parameters').get('product_name')
+    print(f"Products in order: {products}.")
+    quantities = req.get('queryResult').get('parameters').get('number')
+    print(f"Quantities of products in order: {quantities}.")
 
     if not products:
         return jsonify({'fulfillmentText': "I didn't catch what you wanted to remove. Please try again."})
 
+    # Convert quantities to integers to avoid float issues
+    quantities = [int(q) for q in quantities]
+    print(f"Converted Quantities: {quantities}")
+
     # check quantities list matches length of products list
     if len(quantities) < len(products):
-        quantities += [1] * (len(products) - len(quantities))   
+        quantities += [1] * (len(products) - len(quantities))
 
     # get order_id using session_id
     order_id = get_order_id(session_id, cursor)
-
+    if order_id is None:
+        return jsonify({'fulfillmentText': 'No order found for the session. Please start a new order.'})
+    print(f"Order ID: {order_id}")
 
     try:
         # iterate through each product, quantity
@@ -122,9 +130,12 @@ def remove_from_order(session_id, connection, cursor, req):
                 product_exists = cursor.execute('SELECT EXISTS ( SELECT 1 FROM orderDetails WHERE session_id = %s;', (session_id,))
                 if not product_exists:
                     return jsonify({'fulfillmentText': f"Sorry, {product} is not available to remove from your order. Please try again."})
-            # elif 
-                # if the quantity desired to remove is greater than the current quantity of the product, return message stating max amount that can be removed, and remove orderDetail for product_id
+            
+            
+            # if the quantity desired to remove is greater than the current quantity of the product, return message stating max amount that can be removed, and remove orderDetail for product_id
                 
+
+
             else:
                 return jsonify({'fulfillmentText': f"Sorry, {product} is not available."})
             
